@@ -95,10 +95,11 @@ function Billing(){
         }
 
         console.log("Here is your bill 💵💵");
-        console.log("* * * * * * * * * * * * * * * * ");
+        console.log("...........................");
         console.log("Total price", totalAmount);
         console.log("Discount", discount);
         console.log("Discounted price", discountedAmount);
+        console.log("...........................");
         break; 
     } 
     else {
@@ -111,6 +112,7 @@ while(true){
 let paid=input("Did you pay the bill?(paid/no):")
 if(paid.toLowerCase()==="paid"){
     orderedItems=[]
+    console.log("* * * * * * * * * * * * * * * * ");
     askUser()
     Billing()
 }
