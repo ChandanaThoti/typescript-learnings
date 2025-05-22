@@ -1,3 +1,4 @@
+var input = require('prompt-sync')();
 enum ProductType {
     Vegan,
     Vegetarian,
@@ -26,57 +27,95 @@ let products:Product[] =[
 
 
 console.log(products)
-const orderedItems:any[]=[];
+let orderedItems:any[]=[];
+let totalAmount:number=0;
+let discount:number=0;
+let discountedAmount:number=totalAmount;
 askUser()
 function askUser(){
-    interface items{
+    type Items={
         ProductName:string;
         Quantity:number;
         CupSize?:string;
         UnitPrice:number;
-        Discount?:number;
-       
     }
-    
-
-    const input = require('prompt-sync')();
-    const productName: string= input('Enter the product name: ');
-    const quantity : number= input('Enter the quantity: ');
-    let eachItem:any={};
-
+    let productName: string= input('Enter the product name: ');
+    let quantity : number= input('Enter the quantity: ');
+    let cupSize:string="";
+    let eachItem:any={}
+    var itemFound:boolean=false;
     for(let i=0;i<products.length;i++){
-        let cupSize:string="";
-        let itemFound : boolean;
+        
         if(products[i].ProductName.toLowerCase()===productName.toLowerCase()){
+            itemFound=true;
             if (products[i].Category===Category.Beverages){
                 cupSize = input('Enter the cup size (small, medium, large): ');
-                itemFound = true;
         }
-        else{
-            console.log("Product not found")
-        }
-        eachItem={
+        eachItem  ={
         ProductName:productName,
         Quantity:quantity,
         CupSize:cupSize,
         UnitPrice:products[i].Price*quantity,
         }
+        break;
         }
+        
     }
-    orderedItems.push(eachItem);
+    if(itemFound){orderedItems.push(eachItem);}
+    else{console.log("❌ Product not Found....")}
+    
     console.log("Ordered items are:")
     console.log(orderedItems);
 }
-const enter=require('prompt-sync')();
-const selection=enter('Do you want to add more items? (yes/no): ');
-if(selection.toLowerCase()==="yes"){
-    askUser();
+    let enter=require('prompt-sync')();
+Billing()
+function Billing(){
+    while(true){
+    const selection = enter('Do you want to add more items? (yes/done): ');
+
+    if (selection.toLowerCase() === "yes") {
+        askUser();  }
+    else if (selection.toLowerCase() === "done") {
+        console.log("・・・・・・・・・・・・・・・・・・・・")
+        console.log("Hurray🤩!! Your order has been placed....");
+        console.log("Your ordered Items are ➡️➡️");
+
+
+        for (let item of orderedItems) {
+            totalAmount += item.UnitPrice;
+            console.log("Product Name:-", item.ProductName);
+            console.log("Quantity:-", item.Quantity);
+            console.log("UnitPrice:-", item.UnitPrice);
+            console.log("--------------------------");
+        }
+
+        if (totalAmount > 1000) {
+            discount = (totalAmount * 0.1);
+            discountedAmount = totalAmount - discount;
+        }
+
+        console.log("Here is your bill 💵💵");
+        console.log("* * * * * * * * * * * * * * * * ");
+        console.log("Total price", totalAmount);
+        console.log("Discount", discount);
+        console.log("Discounted price", discountedAmount);
+        break; 
+    } 
+    else {
+        console.log("Invalid selection");
+    }
 }
-else if(selection.toLowerCase()==="done"){
-    console.log("Thank you for your order!");
-    console.log("Ordered items are:")
-    console.log(orderedItems);
+}
+
+while(true){
+let paid=input("Did you pay the bill?(paid/no):")
+if(paid.toLowerCase()==="paid"){
+    orderedItems=[]
+    askUser()
+    Billing()
 }
 else{
-    console.log("Invalid selection");
+    console.log("Please Pay the bill")
+    break
+}
 }
